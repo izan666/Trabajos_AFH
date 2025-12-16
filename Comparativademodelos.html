@@ -1,0 +1,1212 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Comparativa de modelos + Gráficas</title>
+
+  <!-- Chart.js para las gráficas -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- Estilos unificados: fondo oscuro, texto claro -->
+  <style>
+    :root {
+      --bg: #050816;
+      --card-bg: #0b1020;
+      --accent: #38bdf8;
+      --accent-soft: rgba(56, 189, 248, 0.2);
+      --accent-strong: rgba(56, 189, 248, 0.9);
+      --text-main: #e5e7eb;
+      --text-soft: #9ca3af;
+      --border-soft: rgba(148, 163, 184, 0.3);
+      --danger: #f97373;
+      --success: #22c55e;
+      --warning: #fbbf24;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: radial-gradient(circle at top, #020617 0, #020617 40%, #000 100%);
+      color: var(--text-main);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
+      min-height: 100vh;
+    }
+
+    /* CONTENIDO DEL PRIMER DOCUMENTO (LM STUDIO, TEXTO, IMÁGENES) */
+    .doc-wrapper {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 32px 16px 16px;
+    }
+
+    .doc-title {
+      text-align: center;
+      font-size: 32px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .doc-author {
+      text-align: right;
+      font-size: 12px;
+      color: var(--text-soft);
+      margin-bottom: 24px;
+    }
+
+    .doc-index-title {
+      text-align: center;
+      font-size: 24px;
+      font-weight: 600;
+      margin: 32px 0 8px;
+    }
+
+    .doc-index {
+      list-style: none;
+      padding-left: 0;
+      text-align: center;
+      margin-bottom: 32px;
+    }
+
+    .doc-index li {
+      margin: 4px 0;
+    }
+
+    .doc-index a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    .doc-index a:hover {
+      text-decoration: underline;
+    }
+
+    .doc-section-title {
+      text-align: center;
+      font-size: 22px;
+      font-weight: 600;
+      margin: 40px 0 12px;
+    }
+
+    .doc-text {
+      font-size: 15px;
+      line-height: 1.5;
+      color: var(--text-main);
+      margin-bottom: 12px;
+    }
+
+    .doc-list {
+      margin: 8px 0 16px 20px;
+      padding-left: 0;
+    }
+
+    .doc-list li {
+      margin-bottom: 4px;
+      font-size: 15px;
+    }
+
+    .doc-center-img {
+      text-align: center;
+      margin: 24px 0;
+    }
+
+    .doc-center-img img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 8px;
+    }
+
+    /* CONTENEDOR DE LA PARTE DE GRÁFICAS (SEGUNDO DOCUMENTO) */
+    .charts-wrapper-outer {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      padding: 32px 16px 40px;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 1400px;
+      background: radial-gradient(circle at top left, rgba(56, 189, 248, 0.06), transparent 55%),
+                  radial-gradient(circle at bottom right, rgba(59, 130, 246, 0.06), transparent 55%),
+                  #020617;
+      border-radius: 20px;
+      padding: 24px 24px 32px;
+      border: 1px solid rgba(148, 163, 184, 0.35);
+      box-shadow:
+        0 18px 40px rgba(15, 23, 42, 0.9),
+        0 0 0 1px rgba(15, 23, 42, 0.8);
+    }
+
+    h1 {
+      text-align: center;
+      color: #e5e7eb;
+      margin: 0 0 8px;
+      font-size: 2rem;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: var(--text-soft);
+      margin-bottom: 32px;
+      font-size: 0.95rem;
+    }
+
+    .charts-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      margin-bottom: 32px;
+    }
+
+    .chart-container {
+      background: rgba(15, 23, 42, 0.98);
+      padding: 18px;
+      border-radius: 15px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+      border: 1px solid rgba(148, 163, 184, 0.3);
+    }
+
+    .chart-title {
+      text-align: center;
+      font-size: 1.05rem;
+      color: #e5e7eb;
+      margin-bottom: 16px;
+      font-weight: 600;
+    }
+
+    .accuracy-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      margin-top: 16px;
+    }
+
+    .table-container {
+      background: rgba(15, 23, 42, 0.98);
+      padding: 20px;
+      border-radius: 15px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+      margin-top: 32px;
+      overflow-x: auto;
+      border: 1px solid rgba(148, 163, 184, 0.3);
+    }
+
+    .table-title {
+      text-align: center;
+      font-size: 1.1rem;
+      color: #e5e7eb;
+      margin-bottom: 16px;
+      font-weight: 600;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+      color: #e5e7eb;
+    }
+
+    table thead {
+      background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+      color: #e5e7eb;
+    }
+
+    table th {
+      padding: 12px;
+      text-align: left;
+      font-weight: 600;
+    }
+
+    table td {
+      padding: 10px 12px;
+      border-bottom: 1px solid #1f2933;
+    }
+
+    table tbody tr:hover {
+      background-color: rgba(15, 23, 42, 0.8);
+    }
+
+    table tbody tr:nth-child(even) {
+      background-color: rgba(15, 23, 42, 0.7);
+    }
+
+    .score {
+      font-weight: 600;
+      color: #e5e7eb;
+    }
+
+    /* BLOQUES AVANZADOS DEL SEGUNDO DOCUMENTO (tarjetas, etc.) */
+    .page {
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      padding: 32px 0 0;
+    }
+
+    .page-inner {
+      width: 100%;
+      max-width: 1200px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      padding: 0 16px 32px;
+    }
+
+    .header {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .header-title {
+      font-size: 24px;
+      font-weight: 600;
+      color: white;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .header-badge {
+      font-size: 12px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: radial-gradient(circle at top left, rgba(56, 189, 248, 0.4), transparent),
+                  rgba(15, 23, 42, 0.8);
+      border: 1px solid rgba(148, 163, 184, 0.5);
+      color: var(--text-soft);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .header-badge-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: var(--accent);
+      box-shadow: 0 0 12px rgba(56, 189, 248, 0.8);
+    }
+
+    .header-subtitle {
+      font-size: 13px;
+      color: var(--text-soft);
+      max-width: 660px;
+    }
+
+    .header-divider {
+      height: 1px;
+      background: linear-gradient(to right,
+        transparent,
+        rgba(148, 163, 184, 0.6),
+        transparent
+      );
+      margin-top: 8px;
+    }
+
+    .content {
+      display: grid;
+      grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+      gap: 20px;
+      align-items: flex-start;
+    }
+
+    @media (max-width: 960px) {
+      .content {
+        grid-template-columns: minmax(0, 1fr);
+      }
+      .charts-grid,
+      .accuracy-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .left-col,
+    .right-col {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .card {
+      background: radial-gradient(circle at top left, rgba(56, 189, 248, 0.1), transparent 55%),
+                  radial-gradient(circle at bottom right, rgba(59, 130, 246, 0.1), transparent 55%),
+                  rgba(15, 23, 42, 0.96);
+      border-radius: 20px;
+      padding: 18px 18px 16px;
+      border: 1px solid rgba(148, 163, 184, 0.35);
+      box-shadow:
+        0 18px 40px rgba(15, 23, 42, 0.9),
+        0 0 0 1px rgba(15, 23, 42, 0.8);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at 0% 0%, rgba(56, 189, 248, 0.16), transparent 60%),
+        radial-gradient(circle at 100% 100%, rgba(59, 130, 246, 0.20), transparent 60%);
+      opacity: 0.7;
+      mix-blend-mode: soft-light;
+      pointer-events: none;
+    }
+
+    .card-inner {
+      position: relative;
+      z-index: 1;
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .card-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: #e5e7eb;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .card-title-pill {
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      color: var(--text-soft);
+    }
+
+    .card-subtitle {
+      font-size: 12px;
+      color: #9ca3af;
+      margin-top: 2px;
+    }
+
+    .card-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .card-tag {
+      font-size: 11px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      color: var(--text-soft);
+    }
+
+    .card-tag strong {
+      color: var(--accent);
+      font-weight: 500;
+    }
+
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    @media (max-width: 960px) {
+      .metrics-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 640px) {
+      .metrics-grid {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    .metric-card {
+      background: radial-gradient(circle at top, rgba(15, 23, 42, 0.95), rgba(15, 23, 42, 0.92));
+      border-radius: 14px;
+      padding: 10px 10px 11px;
+      border: 1px solid rgba(148, 163, 184, 0.32);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .metric-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at top, rgba(56, 189, 248, 0.18), transparent 55%);
+      opacity: 0.7;
+      mix-blend-mode: soft-light;
+      pointer-events: none;
+    }
+
+    .metric-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+    }
+
+    .metric-title {
+      font-size: 11px;
+      font-weight: 500;
+      color: #e5e7eb;
+    }
+
+    .metric-badge {
+      font-size: 10px;
+      padding: 0 7px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.5);
+      color: var(--text-soft);
+      background: rgba(15, 23, 42, 0.9);
+    }
+
+    .metric-value {
+      font-size: 18px;
+      font-weight: 600;
+      color: white;
+      margin-bottom: 2px;
+    }
+
+    .metric-label {
+      font-size: 11px;
+      color: var(--accent);
+    }
+
+    .metric-note {
+      font-size: 10px;
+      color: var(--text-soft);
+      margin-top: 4px;
+    }
+
+    /* tablas de longitud y cualitativas del bloque avanzado */
+    .length-tables {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 14px;
+    }
+
+    @media (max-width: 960px) {
+      .length-tables {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    .length-card {
+      background: radial-gradient(circle at top, rgba(15, 23, 42, 0.95), rgba(15, 23, 42, 0.92));
+      border-radius: 14px;
+      padding: 10px 10px 12px;
+      border: 1px solid rgba(148, 163, 184, 0.32);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .length-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at top, rgba(56, 189, 248, 0.18), transparent 55%);
+      opacity: 0.7;
+      mix-blend-mode: soft-light;
+      pointer-events: none;
+    }
+
+    .length-title {
+      font-size: 12px;
+      font-weight: 500;
+      color: #e5e7eb;
+      margin-bottom: 2px;
+    }
+
+    .length-subtitle {
+      font-size: 11px;
+      color: #9ca3af;
+      margin-bottom: 8px;
+    }
+
+    .length-table-wrapper {
+      border-radius: 10px;
+      border: 1px solid rgba(148, 163, 184, 0.35);
+      overflow: hidden;
+      background: rgba(15, 23, 42, 0.96);
+    }
+
+    .length-table-wrapper table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 11px;
+    }
+
+    .length-table-wrapper th,
+    .length-table-wrapper td {
+      padding: 6px 8px;
+      border-bottom: 1px solid rgba(30, 41, 59, 0.95);
+    }
+
+    .length-table-wrapper thead th {
+      background: rgba(15, 23, 42, 0.98);
+      font-weight: 500;
+      color: #cbd5f5;
+    }
+
+    .length-table-wrapper tbody tr:nth-child(even) {
+      background: rgba(15, 23, 42, 0.9);
+    }
+
+    .length-pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2px 7px;
+      border-radius: 999px;
+      border: 1px solid rgba(56, 189, 248, 0.6);
+      background: rgba(15, 23, 42, 0.96);
+      color: var(--accent-strong);
+      font-size: 10px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .length-note {
+      font-size: 11px;
+      color: #9ca3af;
+      margin-top: 7px;
+    }
+
+    .length-note strong {
+      color: #e5e7eb;
+      font-weight: 500;
+    }
+
+    .table-card {
+      background: radial-gradient(circle at top left, rgba(56, 189, 248, 0.1), transparent 55%),
+                  radial-gradient(circle at bottom right, rgba(59, 130, 246, 0.1), transparent 55%),
+                  rgba(15, 23, 42, 0.96);
+      border-radius: 20px;
+      padding: 18px 18px 16px;
+      border: 1px solid rgba(148, 163, 184, 0.35);
+      box-shadow:
+        0 18px 40px rgba(15, 23, 42, 0.9),
+        0 0 0 1px rgba(15, 23, 42, 0.8);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .table-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at 0% 0%, rgba(56, 189, 248, 0.16), transparent 60%),
+        radial-gradient(circle at 100% 100%, rgba(59, 130, 246, 0.20), transparent 60%);
+      opacity: 0.7;
+      mix-blend-mode: soft-light;
+      pointer-events: none;
+    }
+
+    .table-title-qual {
+      font-size: 15px;
+      font-weight: 600;
+      color: #e5e7eb;
+      margin-bottom: 4px;
+    }
+
+    .table-subtitle {
+      font-size: 12px;
+      color: #9ca3af;
+      margin-bottom: 10px;
+    }
+
+    .qualitative-table-wrapper {
+      border-radius: 12px;
+      border: 1px solid rgba(148, 163, 184, 0.35);
+      overflow: hidden;
+      background: rgba(15, 23, 42, 0.98);
+    }
+
+    .qualitative-table-wrapper table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 11px;
+    }
+
+    .qualitative-table-wrapper th,
+    .qualitative-table-wrapper td {
+      padding: 8px 10px;
+      border-bottom: 1px solid rgba(30, 41, 59, 0.95);
+      vertical-align: top;
+    }
+
+    .qualitative-table-wrapper thead th {
+      background: rgba(15, 23, 42, 0.98);
+      font-weight: 500;
+      color: #cbd5f5;
+    }
+
+    .qualitative-table-wrapper tbody tr:nth-child(even) {
+      background: rgba(15, 23, 42, 0.9);
+    }
+
+    .score-pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2px 9px;
+      border-radius: 999px;
+      border: 1px solid rgba(56, 189, 248, 0.6);
+      background: rgba(15, 23, 42, 0.96);
+      color: var(--accent-strong);
+      font-size: 10px;
+    }
+
+    .virtues,
+    .failures {
+      font-size: 11px;
+      color: #e5e7eb;
+    }
+
+    .virtues strong {
+      color: #22c55e;
+      font-weight: 500;
+    }
+
+    .failures strong {
+      color: #f97373;
+      font-weight: 500;
+    }
+
+    .footer-note {
+      font-size: 11px;
+      color: #9ca3af;
+      margin-top: 10px;
+    }
+
+    .footer-note span {
+      color: var(--accent);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- PRIMER DOCUMENTO (texto + imágenes) RESUMIDO A HTML LIMPIO -->
+  <div class="doc-wrapper">
+    <div class="doc-title">Comparativa de modelos</div>
+    <div class="doc-author">Hecho por Izan Morcillo Martín</div>
+
+    <div class="doc-center-img">
+      <!-- Ajusta las rutas de las imágenes a tu carpeta real -->
+      <img src="images/image1.png" alt="Portada comparativa modelos">
+    </div>
+
+    <div class="doc-index-title">Índice</div>
+    <ul class="doc-index">
+      <li><a href="#lm-studio">¿Qué es LM Studio?</a></li>
+      <li><a href="#ias-usadas">IAs usadas en la comparativa de modelos</a></li>
+      <li><a href="#conceptos">Conceptos cualitativos y cuantitativos</a></li>
+      <li><a href="#graficas">Gráficas comparativas entre modelos</a></li>
+    </ul>
+
+    <section id="lm-studio">
+      <h2 class="doc-section-title">¿Qué es LM Studio?</h2>
+      <p class="doc-text">
+        LM Studio es una aplicación de escritorio gratuita que permite descargar, ejecutar y gestionar modelos de lenguaje grandes
+        (LLMs) como Llama o Mistral directamente en tu equipo, sin depender de la nube, con interfaz tipo ChatGPT y servidor local
+        compatible con la API de OpenAI. [file:1]
+      </p>
+      <div class="doc-center-img">
+        <img src="images/image2.png" alt="Logo LM Studio">
+      </div>
+    </section>
+
+    <section id="ias-usadas">
+      <h2 class="doc-section-title">IAs usadas en la comparativa de modelos</h2>
+      <ul class="doc-list">
+        <li>OPENAI/GPT-OSS-20B</li>
+        <li>QWEN/QWEN3-4B-THINKING-2507</li>
+        <li>QWEN/QWEN3-VL-4B</li>
+        <li>GRANITE-4.0-H-TINY-MLX</li>
+      </ul>
+      <div class="doc-center-img">
+        <img src="images/image3.png" alt="Modelos usados">
+      </div>
+    </section>
+
+    <section id="conceptos">
+      <h2 class="doc-section-title">
+        Conceptos cuantitativos y cualitativos
+      </h2>
+
+      <p class="doc-text"><strong>Valores cuantitativos:</strong> métricas objetivas que se pueden medir con cronómetro o logs (TTFT, tokens por segundo, tiempo total, longitud máxima de contexto y respuesta). [file:1]</p>
+
+      <p class="doc-text"><strong>Valores cualitativos:</strong> evalúan calidad de la respuesta, razonamiento, coherencia, estilo, adaptación al contexto y otros factores más subjetivos que no se reducen a correcto/incorrecto. [file:1]</p>
+    </section>
+
+    <section id="graficas">
+      <h2 class="doc-section-title">Gráficas comparativas entre modelos</h2>
+      <p class="doc-text">
+        A continuación se muestran las gráficas y tablas comparativas de rendimiento y calidad entre los modelos, tanto en Windows como en Mac. [file:2]
+      </p>
+    </section>
+  </div>
+
+  <!-- SEGUNDO DOCUMENTO (graficas.txt) COLOCADO JUSTO DEBAJO -->
+  <div class="charts-wrapper-outer">
+    <div class="container">
+      <h1>Comparativa Rendimiento IAs</h1>
+      <p class="subtitle">
+        Tokens/segundo, Tokens Totales, Tiempo Primer Token y Tiempo Total - Batería 10 Preguntas. [file:2]
+      </p>
+
+      <div class="charts-grid">
+        <div class="chart-container">
+          <div class="chart-title">Windows - Rendimiento Completo</div>
+          <canvas id="windowsPerformance"></canvas>
+        </div>
+
+        <div class="chart-container">
+          <div class="chart-title">Mac - Rendimiento Completo</div>
+          <canvas id="macPerformance"></canvas>
+        </div>
+      </div>
+
+      <div class="accuracy-grid">
+        <div class="chart-container">
+          <div class="chart-title">Windows - Respuestas Correctas</div>
+          <canvas id="windowsAccuracy"></canvas>
+        </div>
+
+        <div class="chart-container">
+          <div class="chart-title">Mac - Respuestas Correctas</div>
+          <canvas id="macAccuracy"></canvas>
+        </div>
+      </div>
+
+      <div class="charts-grid">
+        <div class="chart-container">
+          <div class="chart-title">Distribución de Puntuaciones - Modelos</div>
+          <canvas id="scoreDistribution"></canvas>
+        </div>
+      </div>
+
+      <div class="table-container">
+        <div class="table-title">Comparativa Detallada de Modelos</div>
+        <table>
+          <thead>
+            <tr>
+              <th>Modelo</th>
+              <th>Puntuación</th>
+              <th>Virtudes y Fallos Detectados</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>GPT-OSS 20B</strong></td>
+              <td class="score">9/10</td>
+              <td>Virtudes: Resuelve la mayoría de preguntas lógicas y mantiene coherencia. Fallos: Le falta algo de creatividad. [file:2]</td>
+            </tr>
+            <tr>
+              <td><strong>Granite 4.0 Tiny</strong></td>
+              <td class="score">7/10</td>
+              <td>Virtudes: Muy conciso y rápido para datos puntuales. Fallos: Muy limitado para conversación, respuestas tipo lista o monosílabos. [file:2]</td>
+            </tr>
+            <tr>
+              <td><strong>Qwen 3 VL 4B</strong></td>
+              <td class="score">6/10</td>
+              <td>Virtudes: Justifica con matices y entiende dobles sentidos. Fallos: Poco fiable, necesita varios intentos para responder bien. [file:2]</td>
+            </tr>
+            <tr>
+              <td><strong>Qwen 3 Thinking</strong></td>
+              <td class="score">5/10</td>
+              <td>Virtudes: Muestra el proceso de pensamiento. Fallos: Sobre-analiza y acaba alucinando en acertijos sencillos. [file:2]</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- BLOQUE AVANZADO (resumen cuantitativo + tablas de longitud, etc.) -->
+  <div class="page">
+    <div class="page-inner">
+      <div class="header">
+        <div class="header-title">
+          Rendimiento de modelos locales (MCP)
+          <div class="header-badge">
+            <span class="header-badge-dot"></span>
+            Bench de 10 preguntas lógicas
+          </div>
+        </div>
+        <div class="header-subtitle">
+          Comparativa cuantitativa y cualitativa de cuatro modelos locales
+          (GPT-OSS 20B, Qwen 3 VL 4B, Granite 4.0 Tiny y Qwen 3 Thinking)
+          ejecutados 100% en local tanto en Windows como en Mac. [file:2]
+        </div>
+        <div class="header-divider"></div>
+      </div>
+
+      <div class="content">
+        <div class="left-col">
+          <div class="card">
+            <div class="card-inner">
+              <div class="card-header">
+                <div>
+                  <div class="card-title">
+                    Resumen cuantitativo
+                    <span class="card-title-pill">Bench 10 preguntas</span>
+                  </div>
+                  <div class="card-subtitle">
+                    Métricas principales agregadas por modelo: tokens/segundo, tokens totales generados,
+                    tiempo hasta el primer token y tiempo total para responder las 10 preguntas. [file:2]
+                  </div>
+                </div>
+                <div class="card-tags">
+                  <div class="card-tag"><strong>Windows</strong> vs <strong>Mac</strong></div>
+                  <div class="card-tag">Inferencia 100% local</div>
+                </div>
+              </div>
+
+              <div class="length-tables">
+                <!-- Tabla Windows -->
+                <div class="length-card">
+                  <div class="length-title">Longitud de respuestas en Windows</div>
+                  <div class="length-subtitle">
+                    Tokens totales generados por cada modelo al responder la batería de 10 preguntas.
+                  </div>
+                  <div class="length-table-wrapper">
+                    <table>
+                      <thead>
+                        <tr>
+                          <th>Modelo (Windows)</th>
+                          <th>Tokens totales</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td>GPT-OSS 20B</td>
+                          <td><span class="length-pill">1539 tokens</span></td>
+                        </tr>
+                        <tr>
+                          <td>Qwen 3 VL 4B</td>
+                          <td><span class="length-pill">910 tokens</span></td>
+                        </tr>
+                        <tr>
+                          <td>Granite 4.0 Tiny</td>
+                          <td><span class="length-pill">79 tokens</span></td>
+                        </tr>
+                        <tr>
+                          <td>Qwen 3 Thinking</td>
+                          <td><span class="length-pill">14400 tokens</span></td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <div class="length-note">
+                    <strong>Qwen 3 Thinking</strong> en Windows es el modelo más prolijo,
+                    mientras que <strong>Granite</strong> se mantiene en el extremo de máxima concisión. [file:2]
+                  </div>
+                </div>
+
+                <!-- Tabla Mac -->
+                <div class="length-card">
+                  <div class="length-title">Longitud de respuestas en Mac</div>
+                  <div class="length-subtitle">
+                    Tokens totales generados por cada modelo al responder la misma batería de 10 preguntas.
+                  </div>
+                  <div class="length-table-wrapper">
+                    <table>
+                      <thead>
+                        <tr>
+                          <th>Modelo (Mac)</th>
+                          <th>Tokens totales</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td>GPT-OSS 20B</td>
+                          <td><span class="length-pill">600 tokens</span></td>
+                        </tr>
+                        <tr>
+                          <td>Qwen 3 VL 4B</td>
+                          <td><span class="length-pill">4344 tokens</span></td>
+                        </tr>
+                        <tr>
+                          <td>Granite 4.0 Tiny</td>
+                          <td><span class="length-pill">904 tokens</span></td>
+                        </tr>
+                        <tr>
+                          <td>Qwen 3 Thinking</td>
+                          <td><span class="length-pill">3405 tokens</span></td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <div class="length-note">
+                    En <strong>Mac</strong>, Qwen 3 VL y Qwen 3 Thinking tienden a producir respuestas
+                    mucho más largas que GPT-OSS y Granite para la misma batería de preguntas. [file:2]
+                  </div>
+                </div>
+              </div> <!-- /length-tables -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Podrías usar right-col para más contenido cualitativo si quieres -->
+        <div class="right-col">
+          <!-- De momento se deja vacío o puedes copiar aquí el bloque cualitativo avanzado si lo deseas -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCRIPTS DE GRÁFICAS (Chart.js) -->
+  <script>
+    const dataWindowsPerf = {
+      labels: ['GPT OSS', 'Qwen3', 'Granite', 'Qwen3 Thinking'],
+      datasets: [
+        {
+          label: 'Tokens/segundo',
+          data: [36.19, 109.11, 72.71, 101.20],
+          backgroundColor: 'rgba(54, 162, 235, 0.8)',
+          borderColor: 'rgba(54, 162, 235, 1)',
+          borderWidth: 2
+        },
+        {
+          label: 'Tokens Totales (x100)',
+          data: [1539/100, 910/100, 79/100, 14400/100],
+          backgroundColor: 'rgba(255, 206, 86, 0.8)',
+          borderColor: 'rgba(255, 206, 86, 1)',
+          borderWidth: 2
+        },
+        {
+          label: 'TTFT (seg x10)',
+          data: [0.52*10, 0.14*10, 0.16*10, 0.22*10],
+          backgroundColor: 'rgba(75, 192, 192, 0.8)',
+          borderColor: 'rgba(75, 192, 192, 1)',
+          borderWidth: 2
+        },
+        {
+          label: 'Tiempo Total (seg)',
+          data: [43.08, 8.62, 1.25, 142.51],
+          backgroundColor: 'rgba(255, 99, 132, 0.8)',
+          borderColor: 'rgba(255, 99, 132, 1)',
+          borderWidth: 2
+        }
+      ]
+    };
+
+    const dataMacPerf = {
+      labels: ['GPT OSS', 'Qwen3', 'Granite', 'Qwen3 Thinking'],
+      datasets: [
+        {
+          label: 'Tokens/segundo',
+          data: [34.15, 34.76, 39.14, 34.32],
+          backgroundColor: 'rgba(54, 162, 235, 0.8)',
+          borderColor: 'rgba(54, 162, 235, 1)',
+          borderWidth: 2
+        },
+        {
+          label: 'Tokens Totales (x100)',
+          data: [600/100, 4344/100, 904/100, 3405/100],
+          backgroundColor: 'rgba(255, 206, 86, 0.8)',
+          borderColor: 'rgba(255, 206, 86, 1)',
+          borderWidth: 2
+        },
+        {
+          label: 'TTFT (seg x10)',
+          data: [10.64*10, 0.72*10, 0.61*10, 0.69*10],
+          backgroundColor: 'rgba(75, 192, 192, 0.8)',
+          borderColor: 'rgba(75, 192, 192, 1)',
+          borderWidth: 2
+        },
+        {
+          label: 'Tiempo Total (seg)',
+          data: [27.56, 125.69, 27.08, 99.9],
+          backgroundColor: 'rgba(255, 99, 132, 0.8)',
+          borderColor: 'rgba(255, 99, 132, 1)',
+          borderWidth: 2
+        }
+      ]
+    };
+
+    const dataAccuracyWindows = {
+      labels: ['GPT OSS', 'Qwen3', 'Granite', 'Qwen3 Thinking'],
+      datasets: [{
+        label: 'Respuestas Correctas (de 10)',
+        data: [9, 4, 5, 4],
+        backgroundColor: [
+          'rgba(34, 197, 94, 0.8)',
+          'rgba(249, 115, 22, 0.8)',
+          'rgba(59, 130, 246, 0.8)',
+          'rgba(168, 85, 247, 0.8)'
+        ],
+        borderColor: [
+          'rgba(34, 197, 94, 1)',
+          'rgba(249, 115, 22, 1)',
+          'rgba(59, 130, 246, 1)',
+          'rgba(168, 85, 247, 1)'
+        ],
+        borderWidth: 2
+      }]
+    };
+
+    const dataAccuracyMac = {
+      labels: ['GPT OSS', 'Qwen3', 'Granite', 'Qwen3 Thinking'],
+      datasets: [{
+        label: 'Respuestas Correctas (de 10)',
+        data: [9, 4, 5, 0],
+        backgroundColor: [
+          'rgba(34, 197, 94, 0.8)',
+          'rgba(249, 115, 22, 0.8)',
+          'rgba(59, 130, 246, 0.8)',
+          'rgba(168, 85, 247, 0.8)'
+        ],
+        borderColor: [
+          'rgba(34, 197, 94, 1)',
+          'rgba(249, 115, 22, 1)',
+          'rgba(59, 130, 246, 1)',
+          'rgba(168, 85, 247, 1)'
+        ],
+        borderWidth: 2
+      }]
+    };
+
+    const dataScoreDistribution = {
+      labels: ['GPT-OSS 20B (9/10)', 'Granite 4.0 (7/10)', 'Qwen 3 VL (6/10)', 'Qwen 3 Thinking (5/10)'],
+      datasets: [{
+        label: 'Puntuaciones',
+        data: [9, 7, 6, 5],
+        backgroundColor: [
+          'rgba(34, 197, 94, 0.8)',
+          'rgba(59, 130, 246, 0.8)',
+          'rgba(249, 115, 22, 0.8)',
+          'rgba(239, 68, 68, 0.8)'
+        ],
+        borderColor: [
+          'rgba(34, 197, 94, 1)',
+          'rgba(59, 130, 246, 1)',
+          'rgba(249, 115, 22, 1)',
+          'rgba(239, 68, 68, 1)'
+        ],
+        borderWidth: 2
+      }]
+    };
+
+    const baseConfig = {
+      type: 'bar',
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { position: 'top' }
+        },
+        scales: {
+          y: {
+            beginAtZero: true,
+            grid: { color: 'rgba(148, 163, 184, 0.2)' },
+            ticks: { color: '#e5e7eb' }
+          },
+          x: {
+            grid: { display: false },
+            ticks: { color: '#e5e7eb' }
+          }
+        }
+      }
+    };
+
+    new Chart(document.getElementById('windowsPerformance'), {
+      ...baseConfig,
+      data: dataWindowsPerf,
+      options: {
+        ...baseConfig.options,
+        plugins: {
+          ...baseConfig.options.plugins,
+          title: {
+            display: true,
+            text: 'Windows: rendimiento por modelo',
+            color: '#e5e7eb'
+          }
+        }
+      }
+    });
+
+    new Chart(document.getElementById('macPerformance'), {
+      ...baseConfig,
+      data: dataMacPerf,
+      options: {
+        ...baseConfig.options,
+        plugins: {
+          ...baseConfig.options.plugins,
+          title: {
+            display: true,
+            text: 'Mac: rendimiento por modelo',
+            color: '#e5e7eb'
+          }
+        }
+      }
+    });
+
+    new Chart(document.getElementById('windowsAccuracy'), {
+      ...baseConfig,
+      data: dataAccuracyWindows,
+      options: {
+        ...baseConfig.options,
+        indexAxis: 'y',
+        plugins: {
+          ...baseConfig.options.plugins,
+          title: {
+            display: true,
+            text: 'Windows: respuestas correctas',
+            color: '#e5e7eb'
+          }
+        }
+      }
+    });
+
+    new Chart(document.getElementById('macAccuracy'), {
+      ...baseConfig,
+      data: dataAccuracyMac,
+      options: {
+        ...baseConfig.options,
+        indexAxis: 'y',
+        plugins: {
+          ...baseConfig.options.plugins,
+          title: {
+            display: true,
+            text: 'Mac: respuestas correctas',
+            color: '#e5e7eb'
+          }
+        }
+      }
+    });
+
+    new Chart(document.getElementById('scoreDistribution'), {
+      type: 'doughnut',
+      data: dataScoreDistribution,
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { position: 'bottom', labels: { color: '#e5e7eb' } },
+          title: {
+            display: true,
+            text: 'Distribución de Puntuaciones Comparativa de Modelos',
+            color: '#e5e7eb'
+          }
+        }
+      }
+    });
+  </script>
+</body>
+</html>
